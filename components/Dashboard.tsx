@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Loader2, Star, Globe2, SignalHigh, Menu, Satellite, CircleDot } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import useSignalAlerts from '@/hooks/useSignalAlerts';
+
 
 const SkyMap = dynamic(() => import('./SkyMap'), { ssr: false });
 const Globe = dynamic(() => import('./Globe'), { ssr: false });
@@ -25,6 +27,8 @@ export default function Dashboard() {
       const satnogsRes = await fetch("/api/satnogs");
       const satnogsData = await satnogsRes.json();
       setSatnogsSignals(satnogsData);
+      useSignalAlerts(satnogsSignals);
+
 
       const heavensRes = await fetch("https://api.heavens-above.com/VisiblePasses/?lat=0&lng=0&alt=0&tz=UTC");
       const heavensData = await heavensRes.json();
