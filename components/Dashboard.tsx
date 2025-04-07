@@ -22,7 +22,7 @@ export default function Dashboard() {
       const noradData = await noradRes.json();
       setNoradObjects(noradData);
 
-      const satnogsRes = await fetch("https://db.satnogs.org/api/signals/?status=UNIDENTIFIED&format=json");
+      const satnogsRes = await fetch("/api/satnogs");
       const satnogsData = await satnogsRes.json();
       setSatnogsSignals(satnogsData);
 
