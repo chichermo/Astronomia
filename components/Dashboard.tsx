@@ -1,7 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
@@ -43,7 +40,7 @@ export default function Dashboard() {
       <p className="text-sm text-muted-foreground">Monitoreo en tiempo real de objetos espaciales, trayectorias y anomalías orbitales. Datos desde NORAD, Heavens-Above, SatNOGS y más.</p>
 
       <div className="flex items-center gap-2">
-        <Input placeholder="🔍 Buscar objeto..." value={query} onChange={e => setQuery(e.target.value)} />
+        <input type="text" placeholder="🔍 Buscar objeto..." value={query} onChange={e => setQuery(e.target.value)} className="border px-2 py-1 rounded w-full" />
         {loading && <Loader2 className="animate-spin" />}
       </div>
 
@@ -55,48 +52,42 @@ export default function Dashboard() {
       <h2 className="text-xl font-semibold mt-6">🛰️ Objetos Activos (NORAD)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((obj, idx) => (
-          <Card key={idx}>
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-lg">🛰️ {obj.OBJECT_NAME}</h3>
-              <p className="text-sm text-muted-foreground">NORAD ID: {obj.NORAD_CAT_ID}</p>
-              <p className="text-sm">Tipo: {obj.OBJECT_TYPE}</p>
-              <p className="text-sm">Órbita: {obj.MEAN_MOTION} rev/día</p>
-              <p className="text-sm">Inclinación: {obj.INCLINATION}°</p>
-              <p className="text-sm">Eccentricidad: {obj.ECCENTRICITY}</p>
-              <Button variant="outline" className="mt-2 w-full">📊 Ver trayectoria</Button>
-            </CardContent>
-          </Card>
+          <div key={idx} className="border rounded shadow p-4">
+            <h3 className="font-semibold text-lg">🛰️ {obj.OBJECT_NAME}</h3>
+            <p className="text-sm text-gray-500">NORAD ID: {obj.NORAD_CAT_ID}</p>
+            <p className="text-sm">Tipo: {obj.OBJECT_TYPE}</p>
+            <p className="text-sm">Órbita: {obj.MEAN_MOTION} rev/día</p>
+            <p className="text-sm">Inclinación: {obj.INCLINATION}°</p>
+            <p className="text-sm">Eccentricidad: {obj.ECCENTRICITY}</p>
+            <button className="mt-2 w-full bg-blue-600 text-white py-1 px-2 rounded">📊 Ver trayectoria</button>
+          </div>
         ))}
       </div>
 
       <h2 className="text-xl font-semibold mt-6">📡 Señales Anómalas (SatNOGS)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {satnogsSignals.map((signal, idx) => (
-          <Card key={idx}>
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-lg">📡 Señal #{signal.id}</h3>
-              <p className="text-sm">Frecuencia: {signal.freq}</p>
-              <p className="text-sm">Estación: {signal.station_id}</p>
-              <p className="text-sm">Inicio: {signal.start}</p>
-              <p className="text-sm">Duración: {signal.duration}s</p>
-              <Button variant="outline" className="mt-2 w-full">🔍 Ver análisis</Button>
-            </CardContent>
-          </Card>
+          <div key={idx} className="border rounded shadow p-4">
+            <h3 className="font-semibold text-lg">📡 Señal #{signal.id}</h3>
+            <p className="text-sm">Frecuencia: {signal.freq}</p>
+            <p className="text-sm">Estación: {signal.station_id}</p>
+            <p className="text-sm">Inicio: {signal.start}</p>
+            <p className="text-sm">Duración: {signal.duration}s</p>
+            <button className="mt-2 w-full bg-gray-700 text-white py-1 px-2 rounded">🔍 Ver análisis</button>
+          </div>
         ))}
       </div>
 
       <h2 className="text-xl font-semibold mt-6">🌠 Pasos Visibles (Heavens-Above)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {heavensAbove.map((pass, idx) => (
-          <Card key={idx}>
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-lg">🌠 {pass.name}</h3>
-              <p className="text-sm">Comienzo: {pass.startUTC}</p>
-              <p className="text-sm">Altitud máx: {pass.maxAltitude}</p>
-              <p className="text-sm">Magnitud: {pass.magnitude}</p>
-              <Button variant="outline" className="mt-2 w-full">🕒 Ver detalles</Button>
-            </CardContent>
-          </Card>
+          <div key={idx} className="border rounded shadow p-4">
+            <h3 className="font-semibold text-lg">🌠 {pass.name}</h3>
+            <p className="text-sm">Comienzo: {pass.startUTC}</p>
+            <p className="text-sm">Altitud máx: {pass.maxAltitude}</p>
+            <p className="text-sm">Magnitud: {pass.magnitude}</p>
+            <button className="mt-2 w-full bg-indigo-600 text-white py-1 px-2 rounded">🕒 Ver detalles</button>
+          </div>
         ))}
       </div>
     </div>
