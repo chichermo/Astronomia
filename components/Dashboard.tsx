@@ -7,7 +7,7 @@ import useSignalAlerts from '@/hooks/useSignalAlerts';
 const SkyMap = dynamic(() => import('./SkyMap'), { ssr: false });
 const Globe = dynamic(() => import('./Globe'), { ssr: false });
 
-export default function Dashboard() {
+function Dashboard() {
   const [noradObjects, setNoradObjects] = useState([]);
   const [satnogsSignals, setSatnogsSignals] = useState([]);
   const [heavensAbove, setHeavensAbove] = useState([]);
@@ -112,3 +112,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;
