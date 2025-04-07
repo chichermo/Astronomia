@@ -8,12 +8,21 @@ import useSignalAlerts from '@/hooks/useSignalAlerts';
 const SkyMap = dynamic(() => import('./SkyMap'), { ssr: false });
 const Globe = dynamic(() => import('./Globe'), { ssr: false });
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+const fetcher = (url: string) =>
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      // Convertir BigInt a string para evitar errores de serialización
+      return JSON.parse(JSON.stringify(data, (key, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      ));
+    });
 
 function Dashboard() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [query, setQuery] = useState('');
   const [filterType, setFilterType] = useState('ALL');
+  const [loading, setLoading] = useState(true);
 
   // Cargar datos con SWR
   const { data: noradObjects, error: noradError } = useSWR(
@@ -44,6 +53,13 @@ function Dashboard() {
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
+  // Actualizar estado de carga
+  useEffect(() => {
+    if (noradObjects && satnogsSignals && heavensAbove) {
+      setLoading(false);
+    }
+  }, [noradObjects, satnogsSignals, heavensAbove]);
+
   // Detectar anomalías en señales (frecuencia fuera de rango 100-1000 MHz)
   const anomalies = satnogsSignals?.filter(
     (signal: any) => signal.frequency < 100 || signal.frequency > 1000
@@ -73,6 +89,15 @@ function Dashboard() {
         <div className="text-red-500 text-center">
           Error al cargar datos. Por favor, intenta de nuevo más tarde.
         </div>
+      </div>
+    );
+  }
+
+  // Mostrar un loader mientras los datos no estén listos
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[url('/stars.jpg')] bg-cover bg-fixed text-white flex items-center justify-center">
+        <Loader2 className="animate-spin text-white" size={48} />
       </div>
     );
   }
@@ -150,9 +175,6 @@ function Dashboard() {
               onChange={e => setQuery(e.target.value)}
               className="bg-black/70 border border-gray-500 rounded px-3 py-1 text-sm w-64"
             />
-            {!noradObjects && !satnogsSignals && !heavensAbove && (
-              <Loader2 className="animate-spin text-white" />
-            )}
           </div>
         </header>
 
@@ -180,7 +202,7 @@ function Dashboard() {
         </section>
 
         <footer className="mt-16 text-center text-gray-400 text-xs border-t border-gray-700 pt-6">
-          &copy; 2025 Radar Espacial Guillermo | Datos: NORAD, SatNOGS,
+          © 2025 Radar Espacial Guillermo | Datos: NORAD, SatNOGS,
           Heavens-Above
         </footer>
       </main>
