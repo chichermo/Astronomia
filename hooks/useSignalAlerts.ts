@@ -1,21 +1,29 @@
-// hooks/useSignalAlerts.ts
+
 import { useEffect, useRef } from 'react';
 
-export default function useSignalAlerts(signals) {
-  const previousIds = useRef(new Set());
+export default function useSignalAlerts(signals: any[]) {
+  const previousCount = useRef(0);
 
   useEffect(() => {
-    if (!signals || signals.length === 0) return;
+    if (signals.length > previousCount.current) {
+      const newSignals = signals.length - previousCount.current;
+      console.log(`🔔 Se detectaron ${newSignals} señales nuevas`);
 
-    const currentIds = new Set(signals.map(s => s.id));
-    const newIds = [...currentIds].filter(id => !previousIds.current.has(id));
-
-    if (newIds.length > 0) {
-      const audio = new Audio('/alert.mp3');
-      audio.play();
-      alert(`🚨 Nuevas señales detectadas: ${newIds.length}`);
+      if (Notification.permission === "granted") {
+        new Notification("🚨 Nuevas señales detectadas", {
+          body: `${newSignals} nuevas señales no identificadas.`,
+        });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            new Notification("🚨 Nuevas señales detectadas", {
+              body: `${newSignals} nuevas señales no identificadas.`,
+            });
+          }
+        });
+      }
     }
 
-    previousIds.current = currentIds;
+    previousCount.current = signals.length;
   }, [signals]);
 }
