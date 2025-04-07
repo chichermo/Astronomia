@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
-const SkyMap = dynamic(() => import('@/components/SkyMap'), { ssr: false });
-const Globe = dynamic(() => import('@/components/Globe'), { ssr: false });
+const SkyMap = dynamic(() => import('./SkyMap'), { ssr: false });
+const Globe = dynamic(() => import('./Globe'), { ssr: false });
 
 export default function Dashboard() {
   const [noradObjects, setNoradObjects] = useState([]);
